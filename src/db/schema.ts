@@ -31,7 +31,7 @@ export const specContents = pgTable('spec_contents', {
     categoryId: integer('category_id').notNull().references(() => categories.id, { onDelete: 'cascade' }),
     title: varchar('title', { length: 255 }).notNull(),
     content: text('content'), // Markdown or HTML
-    itemType: varchar('item_type', { length: 50 }).default('DOCUMENT'), // 'DOCUMENT', 'CODE', 'LINK', etc.
+    itemType: varchar('item_type', { length: 50 }).default('CONCEPT'), // 'CONCEPT' (개념), 'CODE' (코드)
     displayOrder: integer('display_order').default(0),
     isActive: boolean('is_active').default(true),
     createdAt: timestamp('created_at').defaultNow().notNull(),

@@ -39,4 +39,14 @@ export class SpecsController {
     async deleteCategory(@Param('id', ParseIntPipe) id: number) {
         return await this.specsService.deleteCategory(id);
     }
+
+    @Patch('contents/:id')
+    async updateContent(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
+        return await this.specsService.updateContent(id, data);
+    }
+
+    @Delete('contents/:id')
+    async deleteContent(@Param('id', ParseIntPipe) id: number) {
+        return await this.specsService.deleteContent(id);
+    }
 }

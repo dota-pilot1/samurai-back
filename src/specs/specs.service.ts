@@ -85,7 +85,8 @@ export class SpecsService {
     }
 
     async createCategory(data: any) {
-        let finalData = { ...data };
+        const { id, createdAt, updatedAt, ...cleanData } = data;
+        let finalData = { ...cleanData };
 
         if (data.parentId) {
             // If parent is provided, set depth = parent.depth + 1
@@ -128,19 +129,61 @@ export class SpecsService {
     }
 
     async createContent(data: any) {
-        return await this.db.insert(schema.specContents).values(data).returning();
+        const { id, createdAt, updatedAt, ...cleanData } = data;
+        return await this.db.insert(schema.specContents).values({
+            ...cleanData,
+            updatedAt: new Date(),
+            createdAt: new Date()
+        }).returning();
     }
 
     async updateCategory(id: number, data: any) {
-        return await this.db.update(schema.categories)
-            .set({ ...data, updatedAt: new Date() })
+        console.log(`[SpecsService] updateCategory id=${id} payload keys:`, Object.keys(data));
+        const { id: _, createdAt, updatedAt, ...cleanData } = data;
+
+        const result = await this.db.update(schema.categories)
+            .set({
+                ...cleanData,
+                updatedAt: new Date()
+            })
             .where(eq(schema.categories.id, id))
             .returning();
+
+        console.log(`[SpecsService] updateCategory SUCCESS. Result ID:`, result[0]?.id);
+        return result;
     }
 
     async deleteCategory(id: number) {
         return await this.db.delete(schema.categories)
             .where(eq(schema.categories.id, id))
+            .returning();
+    }
+
+    async updateContent(id: number, data: any) {
+        console.log(`[SpecsService] updateContent id=${id} title="${data.title}" contentLen=${data.content?.length}`);
+        if (data.content) {
+            // Escape newlines for visible tracking in terminal
+            const preview = data.content.substring(0, 100).replace(/\n/g, '\\n');
+            console.log(`[SpecsService] updateContent preview: "${preview}..."`);
+        }
+
+        const { id: _, createdAt, updatedAt, ...cleanData } = data;
+
+        const result = await this.db.update(schema.specContents)
+            .set({
+                ...cleanData,
+                updatedAt: new Date()
+            })
+            .where(eq(schema.specContents.id, id))
+            .returning();
+
+        console.log(`[SpecsService] updateContent SUCCESS. Result Title:`, result[0]?.title);
+        return result;
+    }
+
+    async deleteContent(id: number) {
+        return await this.db.delete(schema.specContents)
+            .where(eq(schema.specContents.id, id))
             .returning();
     }
 }
