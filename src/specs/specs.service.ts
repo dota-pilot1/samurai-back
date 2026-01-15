@@ -80,7 +80,7 @@ export class SpecsService {
     async getContentsByCategory(categoryId: number) {
         return await this.db.query.specContents.findMany({
             where: eq(schema.specContents.categoryId, categoryId),
-            orderBy: (items, { asc }) => [asc(items.displayOrder)],
+            orderBy: (items, { asc }) => [asc(items.id)],
         });
     }
 
