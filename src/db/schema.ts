@@ -15,6 +15,7 @@ export const categories = pgTable('categories', {
     name: varchar('name', { length: 255 }).notNull(),
     categoryType: varchar('category_type', { length: 50 }).default('TOPIC').notNull(), // 'TOPIC', 'NOTE', 'CHALLENGE', 'FAQ'
     techType: varchar('tech_type', { length: 50 }), // 'frontend', 'backend', 'pilot-ai', etc.
+    description: text('description'), // 기술 스택 설명
     color: varchar('color', { length: 100 }), // for icons
     bg: varchar('bg', { length: 100 }), // for card backgrounds
     parentId: integer('parent_id').references((): AnyPgColumn => categories.id, { onDelete: 'cascade' }),
